@@ -1,21 +1,14 @@
 import board
-import busio
-import digitalio
-import math
+import neopixel
 import time
-BARS = 8
-spi = busio.SPI(clock=board.SCK, MOSI=board.MOSI)
-spi.try_lock()
-send = digitalio.DigitalInOut(board.A0)
-send.direction = digitalio.Direction.OUTPUT
-send.value = False
-
+PIXEN = 10
+RED = (0x10, 0, 0)
+pix = [neopixel.NeoPixel(board.A0, PIXEN, pixel_order=neopixel.GRB)]
 
 while True:
     statline = map(int, input().split())
-    bars_on = map(lambda n: math.floor((n/100)*BARS), statline)
-    bytevals = list(map(lambda b: (2**b)-1, bars_on))
-    spi.write(bytearray(bytevals)[0:1])
-    send.value = True
-    time.sleep(0.01)
-    send.value = False
+    bars_on = list(map(lambda n: round((n/100)*PIXEN), statline))
+    for i in range(0, len(pix)):
+        for j in range(0, PIXEN):
+            pix[i][j] = RED if j < bars_on[i] else 0
+        pix[i].show()
