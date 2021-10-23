@@ -1,10 +1,10 @@
 #!/usr/bin/bpftrace
 
-profile:hz:400 /pid/ {
+profile:hz:200 /pid/ {
   @run[cpu]++
 }
 
-interval:hz:4 {
+interval:hz:2 {
   $i=0;
   unroll(12){
     printf("%d ",@run[$i]);
